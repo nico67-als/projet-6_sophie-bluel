@@ -186,3 +186,32 @@ footer nav ul {
 	margin: 2em
 }
 
+/* Page d'accueil */
+.filters {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin: 51px 0 51px 0;
+}
+
+.filters-button {
+	display: flex;
+	padding: 9px 30px;
+	border: solid 1px #1D6154;
+	border-radius: 60px;
+	font-size: 16px;
+	font-weight: 700;
+	color: #1D6154;	
+	background-color: white;
+}
+
+.filters-button:hover {
+	background-color: #1D6154;
+	color: white;
+}
+
+.filters-button:active {
+	background-color: #1D6154;
+	color: white;
+}
