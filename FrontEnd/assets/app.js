@@ -62,11 +62,38 @@ function displayCategories(categories) {
         const button = creerFiltres(category.name);
         filters.appendChild(button);
         button.addEventListener("click", () => {
-        const filtered = allWorks.filter(work => work.categoryId === category.id);
-        displayWorks(filtered);
+            const filtered = allWorks.filter(work => work.categoryId === category.id);
+            displayWorks(filtered);
         })
-    }) 
-    
+    })
+
+}
+
+// Page d'accueil -> Après authentification sur page login
+// Token d'authentif pour que le navigateur "reste connecté à la session" (localstorage)
+const handleAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+        const login = document.getElementById("login");
+        login.textContent = "logout";
+        login.addEventListener("click", (e) => {
+            e.preventDefault(); // Pour ne pas être renvoyé sur la page login, mise en redirection sur le a   
+            localStorage.removeItem("token");
+            window.location.reload();
+    })
+
+        const edition = document.querySelector(".edition");
+        edition.classList.remove("hidden");
+
+        const filters = document.querySelector(".filters");
+        filters.classList.add("hidden");
+
+        const modifier = document.querySelector(".modifier");
+        modifier.classList.remove("hidden");
+
+    } else {
+
+    }
 }
 
 async function init() {
@@ -74,6 +101,7 @@ async function init() {
     displayWorks(allWorks);
     const allCategories = await fetchCategories();
     displayCategories(allCategories);
+    handleAuth();
 }
 
 init();

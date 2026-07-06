@@ -186,6 +186,14 @@ footer nav ul {
 	margin: 2em
 }
 
+a {
+	text-decoration: none;	
+}
+
+a:active {
+	text-decoration: none;
+}
+
 /* Page d'accueil */
 .filters {
 	display: flex;
@@ -214,4 +222,36 @@ footer nav ul {
 .filters-button:active {
 	background-color: #1D6154;
 	color: white;
+}
+
+/* Après authentification */
+.edition {	
+	display: flex;	
+	justify-content: center;
+	align-items: center;
+	background-color: black;
+	color: white;
+	height: 59px;
+}
+
+#projets {
+	display: flex;	
+	justify-content: center;
+	align-items: center;
+	position: relative;	
+}
+
+.modifier {
+	display: flex;
+	background: none;
+	border: none;	
+	position: absolute;
+	right: 360px;
+	top: 10px;
+	font-size: 14px;
+	gap: 10px;		
+}
+
+.hidden {
+	display: none;
 }
