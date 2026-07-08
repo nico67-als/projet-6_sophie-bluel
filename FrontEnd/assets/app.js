@@ -70,7 +70,6 @@ function displayCategories(categories) {
 }
 
 // Page d'accueil -> Après authentification sur page login
-// Token d'authentif pour que le navigateur "reste connecté à la session" (localstorage)
 const handleAuth = () => {
     const token = localStorage.getItem("token");
     if (token !== null) {
@@ -80,7 +79,7 @@ const handleAuth = () => {
             e.preventDefault(); // Pour ne pas être renvoyé sur la page login, mise en redirection sur le a   
             localStorage.removeItem("token");
             window.location.reload();
-    })
+        })
 
         const edition = document.querySelector(".edition");
         edition.classList.remove("hidden");
@@ -96,12 +95,123 @@ const handleAuth = () => {
     }
 }
 
+// Page d'accueil : Fenêtre modale
+// Ouvrir la modale
+const openmodal = () => {
+    const modal = document.querySelector(".modal");
+    const modifier = document.querySelector(".modifier");
+
+    modifier.addEventListener("click", (e) => {
+        e.preventDefault();
+        modal.classList.remove("hidden");
+        displayModalWorks(allWorks);
+    })
+}
+
+// Fermer la modale
+const closemodal = () => {
+    const modal = document.querySelector(".modal");
+    const modalclose = document.querySelectorAll(".modal-close");
+
+    modalclose.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            modal.classList.add("hidden");
+        })
+    })
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.add("hidden");
+        }
+    })
+}
+
+// Basculer entre les deux vues
+const showGalleryView = () => {
+    const gallery = document.querySelector(".modal-gallery-view");
+    const form = document.querySelector(".modal-form-view");
+    const back = document.querySelector(".modal-back-btn");
+
+    const goToGallery = (e) => {
+        e.preventDefault();
+        gallery.classList.remove("hidden"),
+            form.classList.add("hidden");
+    }
+
+    back.addEventListener("click", goToGallery);
+
+    document.addEventListener("keydown", (e) => {
+        const isTyping = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+        if (e.key === "Backspace" && !isTyping) {
+            goToGallery(e);
+        }
+    })
+
+}
+
+const showFormView = () => {
+    const gallery = document.querySelector(".modal-gallery-view");
+    const form = document.querySelector(".modal-form-view");
+    const addpicture = document.querySelector(".add-photo-btn");
+
+    addpicture.addEventListener("click", (e) => {
+        e.preventDefault();
+        gallery.classList.add("hidden");
+        form.classList.remove("hidden");
+    })
+}
+
+// Modale : galerie + suppression travaux
+const creerFigureModale = (imageUrl, title, id) => {
+    const figure = document.createElement("figure");
+    const img = document.createElement("img");
+    const buttonSuppr = document.createElement("button");
+
+    figure.appendChild(img);
+    figure.appendChild(buttonSuppr);
+
+    img.src = imageUrl;
+    img.alt = title;
+    buttonSuppr.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+    buttonSuppr.classList.add("modal-button-suppr");
+
+    buttonSuppr.addEventListener("click", async () => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${API_URL}/works/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        if (response.ok) {
+            figure.remove();
+            allWorks = allWorks.filter(work => work.id !== id);
+            displayWorks(allWorks);
+        }
+    })
+    return figure;
+}
+
+
+const displayModalWorks = (works) => {
+    const worksgrid = document.querySelector(".modal-works-grid");
+    worksgrid.innerHTML = "";
+    works.forEach(work => {
+        const figure = creerFigureModale(work.imageUrl, work.title, work.id);
+        worksgrid.appendChild(figure);
+    })
+}
+
+
 async function init() {
     allWorks = await fetchWorks();
     displayWorks(allWorks);
     const allCategories = await fetchCategories();
     displayCategories(allCategories);
     handleAuth();
+    openmodal();
+    closemodal();
+    showFormView();
+    showGalleryView();    
 }
 
 init();
