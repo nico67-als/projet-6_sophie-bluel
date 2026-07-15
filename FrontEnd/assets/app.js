@@ -1,24 +1,23 @@
-// Page d'accueil : Images + Titre
 const API_URL = "http://localhost:5678/api"
 let allWorks = [];
 
+// Page d'accueil : Galerie dynamique
 async function fetchWorks() {
     const response = await fetch(`${API_URL}/works`);
-    const data = await response.json();
-    return data;
+    return response.json();
 }
 
-const creerFigure = (imageUrl, title) => {
-    const figure = document.createElement("figure");
+function creerFigure(imageUrl, title) {
     const img = document.createElement("img");
-    const figcaption = document.createElement("figcaption");
-
-    figure.appendChild(img);
-    figure.appendChild(figcaption);
-
     img.src = imageUrl;
     img.alt = title;
+
+    const figcaption = document.createElement("figcaption");
     figcaption.textContent = title;
+
+    const figure = document.createElement("figure");
+    figure.appendChild(img);
+    figure.appendChild(figcaption);
 
     return figure;
 }
@@ -37,11 +36,10 @@ function displayWorks(works) {
 // Page d'accueil : Filtres
 async function fetchCategories() {
     const response = await fetch(`${API_URL}/categories`);
-    const data = await response.json();
-    return data;
+    return response.json();
 }
 
-const creerFiltres = (name) => {
+function creerFiltres(name) {
     const button = document.createElement("button");
     button.textContent = name;
     button.classList.add("filters-button");
@@ -70,7 +68,7 @@ function displayCategories(categories) {
 }
 
 // Page d'accueil -> Après authentification sur page login
-const handleAuth = () => {
+function handleAuth() {
     const token = localStorage.getItem("token");
     if (token !== null) {
         const login = document.getElementById("login");
@@ -90,14 +88,12 @@ const handleAuth = () => {
         const modifier = document.querySelector(".modifier");
         modifier.classList.remove("hidden");
 
-    } else {
-
     }
 }
 
 // Page d'accueil : Fenêtre modale
 // Ouvrir la modale
-const openmodal = () => {
+function openmodal() {
     const modal = document.querySelector(".modal");
     const modifier = document.querySelector(".modifier");
 
@@ -109,7 +105,7 @@ const openmodal = () => {
 }
 
 // Fermer la modale
-const closemodal = () => {
+function closemodal() {
     const modal = document.querySelector(".modal");
     const modalclose = document.querySelectorAll(".modal-close");
 
@@ -128,53 +124,41 @@ const closemodal = () => {
 }
 
 // Basculer entre les deux vues
-const showGalleryView = () => {
-    const gallery = document.querySelector(".modal-gallery-view");
-    const form = document.querySelector(".modal-form-view");
-    const back = document.querySelector(".modal-back-btn");
+function showGalleryView() {
+    document.querySelector(".modal-gallery-view").classList.remove("hidden");
+    document.querySelector(".modal-form-view").classList.add("hidden");
+}
 
-    const goToGallery = (e) => {
-        e.preventDefault();
-        gallery.classList.remove("hidden"),
-            form.classList.add("hidden");
+document.querySelector(".modal-back-btn").addEventListener("click", showGalleryView);
+document.addEventListener("keydown", (e) => {
+    const isTyping = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+    if (e.key === "Backspace" && !isTyping) {
+        showGalleryView();
     }
+})
 
-    back.addEventListener("click", goToGallery);
-
-    document.addEventListener("keydown", (e) => {
-        const isTyping = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
-        if (e.key === "Backspace" && !isTyping) {
-            goToGallery(e);
-        }
-    })
-
+function showFormView() {
+    document.querySelector(".modal-gallery-view").classList.add("hidden");
+    document.querySelector(".modal-form-view").classList.remove("hidden");
 }
 
-const showFormView = () => {
-    const gallery = document.querySelector(".modal-gallery-view");
-    const form = document.querySelector(".modal-form-view");
-    const addpicture = document.querySelector(".add-photo-btn");
-
-    addpicture.addEventListener("click", (e) => {
-        e.preventDefault();
-        gallery.classList.add("hidden");
-        form.classList.remove("hidden");
-    })
-}
+const addpicture = document.querySelector(".add-photo-btn");
+addpicture.addEventListener("click", showFormView);
 
 // Modale : galerie + suppression travaux
-const creerFigureModale = (imageUrl, title, id) => {
-    const figure = document.createElement("figure");
+function creerFigureModale(imageUrl, title, id) {
     const img = document.createElement("img");
-    const buttonSuppr = document.createElement("button");
-
-    figure.appendChild(img);
-    figure.appendChild(buttonSuppr);
-
     img.src = imageUrl;
     img.alt = title;
+
+    const buttonSuppr = document.createElement("button");
     buttonSuppr.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
     buttonSuppr.classList.add("modal-button-suppr");
+
+
+    const figure = document.createElement("figure");
+    figure.appendChild(img);
+    figure.appendChild(buttonSuppr);
 
     buttonSuppr.addEventListener("click", async () => {
         const token = localStorage.getItem("token");
@@ -183,16 +167,16 @@ const creerFigureModale = (imageUrl, title, id) => {
             headers: { Authorization: `Bearer ${token}` }
         })
         if (response.ok) {
-            figure.remove();
             allWorks = allWorks.filter(work => work.id !== id);
             displayWorks(allWorks);
+            displayModalWorks(allWorks);
         }
     })
+
     return figure;
 }
 
-
-const displayModalWorks = (works) => {
+function displayModalWorks(works) {
     const worksgrid = document.querySelector(".modal-works-grid");
     worksgrid.innerHTML = "";
     works.forEach(work => {
@@ -201,6 +185,82 @@ const displayModalWorks = (works) => {
     })
 }
 
+// Modale : Formulaire
+function categorySelect(categories) {
+    const select = document.getElementById("work-category");
+    categories.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    })
+}
+
+function photoPreview() {
+    const input = document.getElementById("photo-input");
+    input.addEventListener("change", () => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.querySelector(".photo-preview").classList.remove("hidden");
+            document.querySelector(".upload-placeholder").classList.add("hidden");
+            document.querySelector(".photo-preview").src = e.target.result;
+        }
+
+        const fichier = input.files[0];
+        reader.readAsDataURL(fichier);
+    });
+}
+
+function formValidation() {
+    document.getElementById("work-title").addEventListener("input", checkFormValidity);
+    document.getElementById("work-category").addEventListener("change", checkFormValidity);
+    document.getElementById("photo-input").addEventListener("change", checkFormValidity);
+}
+
+function checkFormValidity() {
+    const image = document.getElementById("photo-input").files[0];
+    const titre = document.getElementById("work-title").value;
+    const category = document.getElementById("work-category").value;
+
+    const submitBtn = document.querySelector(".submit-btn");
+    submitBtn.disabled = !(image && titre && category);
+}
+
+function setupAddWorkForm(categories) {
+    categorySelect(categories);
+    photoPreview();
+    formValidation();
+}
+
+async function sendFormData(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    const titre = document.getElementById("work-title").value;
+    formData.append("title", titre);
+    const image = document.getElementById("photo-input").files[0];
+    formData.append("image", image);
+    const category = document.getElementById("work-category").value;
+    formData.append("category", category);
+
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${API_URL}/works`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+    })
+
+    if (response.ok) {
+        const newWork = await response.json();
+        allWorks.push(newWork);
+        displayWorks(allWorks);
+        displayModalWorks(allWorks);
+        document.querySelector(".modal").classList.add("hidden");
+    }
+
+    showGalleryView();
+}
+
+document.querySelector(".add-work-form").addEventListener("submit", sendFormData);
 
 async function init() {
     allWorks = await fetchWorks();
@@ -210,8 +270,8 @@ async function init() {
     handleAuth();
     openmodal();
     closemodal();
-    showFormView();
-    showGalleryView();    
+    showGalleryView();
+    setupAddWorkForm(allCategories);
 }
 
 init();

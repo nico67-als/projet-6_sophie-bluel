@@ -89,20 +89,22 @@
 	<aside class="modal hidden">
 		<div class="modal-wrapper">
 			<div class="modal-gallery-view">
-				<button class="modal-close">✕</button>
+				<i class="fa-solid fa-xmark modal-close"></i>
 				<h3 class="modal-gallery-title">Galerie photo</h3>
 				<div class="modal-works-grid"></div>
 				<hr class="modal-separator">				
 				<button class="add-photo-btn">Ajouter une photo</button>
 			</div>
 			<div class="modal-form-view hidden">
-				<button class="modal-back-btn">←</button>
-				<button class="modal-close">✕</button>
-				<h3>Ajout photo</h3>
+				<i class="fa-solid fa-arrow-left modal-back-btn"></i>
+				<i class="fa-solid fa-xmark modal-close"></i>
+				<h3 class="modal-form-title">Ajout photo</h3>
 				<form class="add-work-form">
 					<div class="upload-placeholder">
-						<label for="photo-input">+ Ajouter photo</label>
-						<input type="file" id="photo-input" accept="image/*">
+						<i class="fa-regular fa-image upload-icon"></i>
+						<label for="photo-input" class="upload-btn">+ Ajouter photo</label>
+						<input type="file" id="photo-input" accept="image/*" class="hidden">
+						<p class="upload-text">jpg, png : 4mo max</p>
 					</div>
 					<img class="photo-preview hidden" alt="aperçu">
 					<label for="work-title">Titre</label>
