@@ -86,6 +86,38 @@
 			</ul>
 		</nav>
 	</footer>
+	<aside class="modal hidden">
+		<div class="modal-wrapper">
+			<div class="modal-gallery-view">
+				<i class="fa-solid fa-xmark modal-close"></i>
+				<h3 class="modal-gallery-title">Galerie photo</h3>
+				<div class="modal-works-grid"></div>
+				<hr class="modal-separator">				
+				<button class="add-photo-btn">Ajouter une photo</button>
+			</div>
+			<div class="modal-form-view hidden">
+				<i class="fa-solid fa-arrow-left modal-back-btn"></i>
+				<i class="fa-solid fa-xmark modal-close"></i>
+				<h3 class="modal-form-title">Ajout photo</h3>
+				<form class="add-work-form">
+					<div class="upload-placeholder">
+						<i class="fa-regular fa-image upload-icon"></i>
+						<label for="photo-input" class="upload-btn">+ Ajouter photo</label>
+						<input type="file" id="photo-input" accept="image/*" class="hidden">
+						<p class="upload-text">jpg, png : 4mo max</p>
+					</div>
+					<img class="photo-preview hidden" alt="aperçu">
+					<label for="work-title">Titre</label>
+					<input type="text" id="work-title">
+					<label for="work-category">Catégorie</label>
+					<select id="work-category"></select>
+					<p class="form-error hidden">Erreur lors de l'envoi.</p>
+					<button class="submit-btn" type="submit" disabled>Valider</button>
+				</form>
+			</div>
+
+		</div>
+	</aside>
 	<script src="./assets/app.js"></script>
 </body>
 
