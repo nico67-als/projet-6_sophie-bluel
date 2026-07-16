@@ -170,6 +170,8 @@ function creerFigureModale(imageUrl, title, id) {
             allWorks = allWorks.filter(work => work.id !== id);
             displayWorks(allWorks);
             displayModalWorks(allWorks);
+        } else {
+            console.log("erreur")
         }
     })
 
