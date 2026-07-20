@@ -74,7 +74,7 @@ function handleAuth() {
         const login = document.getElementById("login");
         login.textContent = "logout";
         login.addEventListener("click", (e) => {
-            e.preventDefault(); // Pour ne pas être renvoyé sur la page login, mise en redirection sur le a   
+            e.preventDefault();
             localStorage.removeItem("token");
             window.location.reload();
         })
